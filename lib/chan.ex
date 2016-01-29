@@ -7,39 +7,41 @@ defmodule Chan do
   def download(url) do
     base_dir = "/Users/sean/Pictures/forumstuff/.topkek/"
     page = get(url)
-    # title = Regex.replace(~r/http\:\/\/boards.4chan.org\/\w*\/thread\/\d+\//, to_string(url), "")
     temp_title = Floki.text(hd(Floki.find(page, "span.subject")))
     title = Regex.replace(~r/ /, temp_title, "-")
+    title = Regex.replace(~r/\//, title, "")
     board = to_string(Regex.scan(~r/(?:http\:\/\/boards.4chan.org\/)(\w*)/, url, capture: :all_but_first))
 
     folder =
       case String.length(title) do
-        0 -> base_dir <> "misc"
+        0 -> board <> "/" <> "misc"
         _ -> board <> "/" <> title
       end
 
-    spawn fn -> File.mkdir!(base_dir <> board) end
-    spawn fn -> File.mkdir!(base_dir <> folder) end
+    File.mkdir(base_dir <> board)
+    File.mkdir(base_dir <> folder)
     links = Floki.find(page, "a.fileThumb")
-    processes = Enum.map(links, fn(x) -> spawn fn -> dl_pic(Floki.attribute(x, "href"), folder) end end)
-    # IO.inspect processes
-    # :timer.sleep(5000)
-    # Enum.map(processes, fn(x) -> IO.inspect Process.info(x) end)
-    wait_for_process(List.last(processes))
+    processes = Enum.map(links, fn(x) -> spawn fn -> dl_pic(Floki.attribute(x, "href"), base_dir <> folder) end end)
+    Enum.map(processes, fn(x) -> wait_for_process(x) end )
+    IO.puts "Done"
   end
 
-  def dl_pic(url, folder) do
+  def dl_pic(url, folder_path) do
+    # replace the backslashes with nothing
     url = Regex.replace(~r/\/\//, to_string(url), "")
-    %HTTPoison.Response{body: body} = HTTPoison.get! url
     uniq_id = Regex.replace(~r/i\.4cdn\.org\/\w*\//, url, "")
-    filename = "/Users/sean/Pictures/forumstuff/.topkek/" <> folder <> "/" <> uniq_id
-    File.write!(filename, body)
-    # IO.puts url <> " " <> filename
+    filename = folder_path <> "/" <> uniq_id
+    # check if the file exists, if not dl it, write it and output the new file path
+    unless elem(File.read(filename), 0) == :ok do
+      %HTTPoison.Response{body: body} = HTTPoison.get!(url, timeout: 10)
+      File.write!(filename, body)
+      IO.puts url <> " " <> filename
+    end
   end
 
   def wait_for_process(pid) do
     info = Process.info(pid)
-    :timer.sleep(100)
+    :timer.sleep(10)
     case info do
       nil -> nil
       _ -> wait_for_process(pid)
