@@ -36,6 +36,7 @@ defmodule Scrape.Mixfile do
     [
       {:floki, "~> 0.7"},
       {:httpoison, "~> 0.8.0"},
+      {:exjsx, "~> 3.2.0"},
     ]
   end
 end

@@ -10,19 +10,28 @@ defmodule Scrape.CLI do
   def parse_args(args) do
     options = OptionParser.parse(args)
     case options do
-      {[chan: chan], _, _} -> [chan]
-      _ -> :help
+      {[chan: chan], _, _} -> {:chan, chan}
+      {[dir: dir], _, _} -> {:dir, dir}
+      _ -> {:help}
     end
   end
-  
-  def execute([chan]) do
-    IO.puts "CHAN IS A GO"
-    Chan.download(chan)
-  end
 
-  def execute(:help) do
-    IO.puts "lol no"
-  end
+  def execute(tuple) do
+    case tuple do
+      {:chan, value} ->
+        IO.puts "CHAN IS A GO"
+        Chan.download(value)
 
+      {:dir, value} ->
+        case File.exists?(value) do
+          true ->
+            IO.puts "Setting default download directory"
+            Crawl.push_config(:dl_directory, value)
+          _ -> IO.puts "That path does not exist: #{value}"
+        end
+
+      _ -> IO.puts "No idea what you want m80"
+    end
+  end
   # System.halt(0)
 end

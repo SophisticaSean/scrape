@@ -33,4 +33,27 @@ defmodule Crawl do
   def find(html, selector) do
     Floki.find(html, selector)
   end
+
+  def get_config do
+    env_json = File.read("config.json")
+    case env_json do
+      {:error, :enoent} ->
+        File.write("config.json", "{}")
+        HashDict.new()
+      _ ->
+        env_json = elem(env_json, 1)
+        elem(JSX.decode(env_json), 1)
+    end
+  end
+
+  def push_config(key, value) do
+    env_dict = get_config
+    env_dict = Dict.put(env_dict, key, value)
+    env_dict = JSX.encode(env_dict)
+    File.write("config.json", elem(env_dict, 1))
+  end
+
+  def clear_config do
+    File.write("config.json", "{}")
+  end
 end

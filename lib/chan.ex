@@ -5,7 +5,14 @@ defmodule Chan do
   Chan.download() takes a 4chan url and downloads all images in it
   """
   def download(url) do
-    base_dir = "/Users/sean/Pictures/forumstuff/.topkek/"
+    env_dict = Crawl.get_config
+    base_dir = env_dict["dl_directory"]
+    if base_dir == nil do
+      IO.puts "No directory set, use '--dir some/dir' to set it"
+      base_dir = System.cwd()
+      IO.puts "Using current working directory instead: #{base_dir}"
+    end
+
     page = get(url)
     temp_title = Floki.text(hd(Floki.find(page, "span.subject")))
     title = Regex.replace(~r/ /, temp_title, "-")
