@@ -7,6 +7,7 @@ compile:
 mix escript.build
 ````
 instead of compiling, you can just use the scrape executable
+
 set download directory:
 ```bash
 ./scrape --dir path/to/download/dir
