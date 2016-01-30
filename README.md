@@ -1,5 +1,5 @@
 # scrape
-image scraper in elixir, currently can scrape images from 4chan threads
+distributed and asynchronous image scraper in elixir, currently can scrape images from 4chan threads. can download a full thread of images in under 10 seconds!
 
 # Usage
 compile:
