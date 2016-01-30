@@ -30,7 +30,7 @@ defmodule Scrape.CLI do
           _ -> IO.puts "That path does not exist: #{value}"
         end
 
-      _ -> IO.puts "No idea what you want m80"
+      _ -> IO.puts "No idea what you want m8"
     end
   end
   # System.halt(0)

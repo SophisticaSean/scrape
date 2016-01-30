@@ -19,9 +19,22 @@ defmodule Scrape.Mixfile do
   #
   # Type `mix help compile.app` for more information
   def application do
-    [ applications: [:logger, :httpoison],
+    [ applications: applications(Mix.env),
     ]
   end
+
+  @doc """
+  sets vars for the remix dep, escript makes it compile escript too, silent prevents it from
+  IO.putting each time it compiles, defaults are both false
+  """
+  def remix do
+    [ escript: true,
+      silent: false,
+    ]
+  end
+
+  defp applications(:dev), do: applications(:all) ++ [:remix]
+  defp applications(_all), do: [:logger, :httpoison]
 
   # Dependencies can be Hex packages:
   #
@@ -37,6 +50,7 @@ defmodule Scrape.Mixfile do
       {:floki, "~> 0.7"},
       {:httpoison, "~> 0.8.0"},
       {:exjsx, "~> 3.2.0"},
+      {:remix, "~> 0.0.1", only: :dev},
     ]
   end
 end

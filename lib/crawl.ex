@@ -9,9 +9,6 @@ defmodule Crawl do
     List.delete(urls, [url])
     IO.puts length(urls)
     IO.puts url
-    # @not_visited = Enum.uniq((@not_visited ++ urls))
-    # Enum.map(tl(urls), fn(x) -> crawl(x) end)
-    # urls
     Enum.map(urls, fn(url) -> spawn fn -> Crawl.crawl(url) end end)
   end
 
