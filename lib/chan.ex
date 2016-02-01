@@ -45,13 +45,4 @@ defmodule Chan do
       IO.puts url <> " " <> filename
     end
   end
-
-  def wait_for_process(pid) do
-    info = Process.info(pid)
-    :timer.sleep(10)
-    case info do
-      nil -> nil
-      _ -> wait_for_process(pid)
-    end
-  end
 end

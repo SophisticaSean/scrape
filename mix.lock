@@ -7,5 +7,5 @@
   "jsx": {:hex, :jsx, "2.6.2"},
   "mimerl": {:hex, :mimerl, "1.0.2"},
   "mochiweb": {:hex, :mochiweb, "2.12.2"},
-  "remix": {:hex, :remix, "0.0.2"},
+  "remix": {:git, "https://github.com/AgilionApps/remix.git", "99ca2d9cfeb63f64adea332845052396c40d6853", []},
   "ssl_verify_hostname": {:hex, :ssl_verify_hostname, "1.0.5"}}

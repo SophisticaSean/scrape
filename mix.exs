@@ -23,16 +23,6 @@ defmodule Scrape.Mixfile do
     ]
   end
 
-  @doc """
-  sets vars for the remix dep, escript makes it compile escript too, silent prevents it from
-  IO.putting each time it compiles, defaults are both false
-  """
-  def remix do
-    [ escript: true,
-      silent: false,
-    ]
-  end
-
   defp applications(:dev), do: applications(:all) ++ [:remix]
   defp applications(_all), do: [:logger, :httpoison]
 
@@ -50,7 +40,7 @@ defmodule Scrape.Mixfile do
       {:floki, "~> 0.7"},
       {:httpoison, "~> 0.8.0"},
       {:exjsx, "~> 3.2.0"},
-      {:remix, "~> 0.0.1", only: :dev},
+      {:remix, git: "https://github.com/AgilionApps/remix.git", only: :dev},
     ]
   end
 end

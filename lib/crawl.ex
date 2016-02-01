@@ -53,4 +53,13 @@ defmodule Crawl do
   def clear_config do
     File.write("config.json", "{}")
   end
+
+  def wait_for_process(pid) do
+    info = Process.info(pid)
+    :timer.sleep(10)
+    case info do
+      nil -> nil
+      _ -> wait_for_process(pid)
+    end
+  end
 end
