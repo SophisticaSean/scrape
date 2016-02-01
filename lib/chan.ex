@@ -5,13 +5,7 @@ defmodule Chan do
   Chan.download() takes a 4chan url and downloads all images in it
   """
   def download(url) do
-    env_dict = Crawl.get_config
-    base_dir = env_dict["dl_directory"]
-    if base_dir == nil do
-      IO.puts "No directory set, use '--dir some/dir' to set it"
-      base_dir = System.cwd()
-      IO.puts "Using current working directory instead: #{base_dir}"
-    end
+    base_dir = Crawl.dl_dir_check
 
     page = get(url)
     temp_title = Floki.text(hd(Floki.find(page, "span.subject")))
@@ -33,6 +27,9 @@ defmodule Chan do
     IO.puts "Done"
   end
 
+  @doc """
+    Takes a 4chan img url and downloads it if it does not already exist
+  """
   def dl_pic(url, folder_path) do
     # replace the backslashes with nothing
     url = Regex.replace(~r/\/\//, to_string(url), "")
@@ -42,7 +39,7 @@ defmodule Chan do
     unless elem(File.read(filename), 0) == :ok do
       %HTTPoison.Response{body: body} = HTTPoison.get!(url, timeout: 10)
       File.write!(filename, body)
-      IO.puts url <> " " <> filename
+      IO.puts filename
     end
   end
 end

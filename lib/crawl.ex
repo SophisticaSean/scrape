@@ -62,4 +62,14 @@ defmodule Crawl do
       _ -> wait_for_process(pid)
     end
   end
+
+  def dl_dir_check() do
+    base_dir = get_config["dl_directory"]
+    if base_dir == nil do
+      IO.puts "No directory set, use '--dir some/dir' to set it"
+      base_dir = System.cwd()
+      IO.puts "Using current working directory instead: #{base_dir}"
+    end
+    base_dir
+  end
 end
