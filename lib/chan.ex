@@ -23,7 +23,7 @@ defmodule Chan do
     File.mkdir(base_dir <> folder)
     links = Floki.find(page, "a.fileThumb")
     processes = Enum.map(links, fn(x) -> spawn fn -> dl_pic(Floki.attribute(x, "href"), base_dir <> folder) end end)
-    Enum.map(processes, fn(x) -> wait_for_process(x) end )
+    Enum.map(processes, fn(x) -> Crawl.wait_for_process(x) end )
     IO.puts "Done"
   end
 
