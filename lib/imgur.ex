@@ -28,12 +28,14 @@ defmodule Imgur do
   def get_images(url, path) do
     url = Regex.replace(~r/^\/\//, to_string(url), "")
     page = Crawl.get(url)
+    replace = fn(a, b, c) -> Regex.replace(b, a, c) end
     case String.valid?(page) do
       false ->
-        uniq_id = Regex.replace(~r/i\.imgur.com\//, url, "")
-        uniq_id = Regex.replace(~r/http\:\/\//, uniq_id, "")
-        uniq_id = Regex.replace(~r/https\:\/\//, uniq_id, "")
-        uniq_id = Regex.replace(~r/\?.*/, uniq_id, "")
+        uniq_id = replace.(url, ~r/i\.imgur.com\//, "")
+        |> replace.(~r/http\:\/\//, "")
+        |> replace.(~r/https\:\/\//, "")
+        |> replace.(~r/\?.*/, "")
+
         filename = path <> "/" <> uniq_id
         # check if the file exists, if not dl it, write it and output the new file path
         unless elem(File.read(filename), 0) == :ok do
