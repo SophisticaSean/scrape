@@ -1,27 +1,6 @@
 defmodule Imgur do
 
-  @directory Crawl.dl_dir_check
-
-  def temp(url) do
-    subreddit = to_string(Regex.scan(~r/r\/(.*)/, url, capture: :all_but_first))
-    if subreddit == "" do
-      raise "URL: #{url} is invalid"
-    end
-
-    path = @directory <> subreddit
-
-    File.mkdir(path)
-
-    imgur_list = Crawl.get(url)
-      |> Crawl.find("p.title > a")
-      |> Enum.map(fn(x) -> Floki.attribute(x, "href") end)
-      |> List.flatten
-      |> imgur_domain_filter
-    process_list = Enum.map(imgur_list, fn(x) -> spawn fn -> get_images(x, path) end end )
-    Enum.map(process_list, fn(x) -> Crawl.wait_for_process(x) end)
-  end
-
-  def imgur_domain_filter(list) do
+  def domain_filter(list) do
     Enum.filter(list, fn(x) -> Regex.match?(~r/imgur/, x) end)
   end
 
@@ -41,8 +20,8 @@ defmodule Imgur do
         unless elem(File.read(filename), 0) == :ok do
           File.write!(filename, page)
           IO.puts filename
+          IO.puts "downloading #{uniq_id}"
         end
-        IO.puts "downloading #{uniq_id}"
       _ ->
         images = Floki.find(page, "div.post-images")
           |> Floki.find("img")
