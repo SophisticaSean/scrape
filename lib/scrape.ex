@@ -8,7 +8,8 @@ defmodule Scrape.CLI do
   end
 
   def parse_args(args) do
-    options = OptionParser.parse(args)
+    IO.puts(args)
+    options = OptionParser.parse(args, switches: [])
     case options do
       {[chan: chan], _, _} -> {:chan, chan}
       {[dir: dir], _, _} -> {:dir, dir}
@@ -30,7 +31,7 @@ defmodule Scrape.CLI do
           _ -> IO.puts "That path does not exist: #{value}"
         end
 
-      _ -> IO.puts "No idea what you want m8"
+      _ -> IO.puts "No idea what you want mate"
     end
   end
   # System.halt(0)

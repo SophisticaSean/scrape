@@ -7,8 +7,8 @@ defmodule Scrape.Mixfile do
      elixir: "~> 1.0",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
-     escript: escript,
-     deps: deps]
+     escript: escript(),
+     deps: deps()]
   end
 
   def escript do
